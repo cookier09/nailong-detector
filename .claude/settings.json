@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import json; nb=json.load\\(open\\('yolo26-nailong.ipynb',encoding='utf-8'\\)\\); [print\\('=== CELL',i,'===\\\\n'+''.join\\(c.get\\('source',[]\\)\\)\\) for i,c in enumerate\\(nb['cells']\\) if c['cell_type']=='code']\")",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "PowerShell($candidates = @\\(\"$env:USERPROFILE\\\\.cache\\\\kagglehub\",\"$env:LOCALAPPDATA\\\\kagglehub\",\"$env:APPDATA\\\\kagglehub\",\"C:\\\\Users\\\\cookier09\\\\.cache\\\\kagglehub\",\"$env:USERPROFILE\\\\.kaggle\"\\); foreach\\($p in $candidates\\){ if\\(Test-Path $p\\){ \"EXISTS: $p\"; Get-ChildItem $p -Recurse -Depth 3 -ErrorAction SilentlyContinue | Select-Object -First 30 FullName } else { \"missing: $p\" } })",
+      "PowerShell(foreach\\($m in 'kagglehub','kaggle','ultralytics','torch'\\){ try { $v=\\(python -c \"import $m; print\\(getattr\\($m,'__version__','?'\\)\\)\" 2>$null\\); \"$m -> $v\" } catch { \"$m -> NOT INSTALLED\" } }; \"---cuda---\"; python -c \"import torch; print\\('cuda', torch.cuda.is_available\\(\\), torch.cuda.get_device_name\\(0\\) if torch.cuda.is_available\\(\\) else ''\\)\" 2>&1)",
+      "Bash(ls \"E:/condaData/envs_dirs/tc-gpu\" 2>/dev/null | head -20; echo \"=== python exe ===\"; ls \"E:/condaData/envs_dirs/tc-gpu/python.exe\" 2>/dev/null)",
+      "Read(//e/condaData/envs_dirs/tc-gpu/**)",
+      "Bash(\"E:/condaData/envs_dirs/tc-gpu/python.exe\" -c \"import torch; print\\('torch', torch.__version__\\); print\\('cuda avail', torch.cuda.is_available\\(\\)\\); print\\('device', torch.cuda.get_device_name\\(0\\) if torch.cuda.is_available\\(\\) else 'none'\\); print\\('cuda ver', torch.version.cuda\\)\")",
+      "Bash(\"E:/condaData/envs_dirs/tc-gpu/python.exe\" -c \"import ultralytics; print\\('ultralytics', ultralytics.__version__\\)\")",
+      "Bash(nvidia-smi --query-gpu=name,memory.total --format=csv)",
+      "Bash(\"E:/condaData/envs_dirs/tc-gpu/python.exe\" --version)",
+      "Bash(conda list *)",
+      "Bash(python -c \"import json,sys; pkgs=json.load\\(sys.stdin\\); print\\('total pkgs:', len\\(pkgs\\)\\); print\\('--- conda \\(non-pypi\\) ---'\\); [print\\(p['name'], p['version']\\) for p in pkgs if p.get\\('channel'\\)!='pypi']; print\\('--- pypi key ones ---'\\); want={'torch','torchvision','torchaudio','ultralytics','numpy','opencv-python','opencv','pillow','pandas','pyyaml','tqdm','scipy','tensorflow','tensorboard','onnx','onnxruntime','seaborn','psutil','requests','thop'}; [print\\(p['name'], p['version']\\) for p in pkgs if p.get\\('channel'\\)=='pypi' and p['name'] in want]\")"
+    ]
+  }
+}
