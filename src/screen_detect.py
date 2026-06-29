@@ -261,16 +261,21 @@ class ResultWindow(tk.Toplevel):
                         fg='#666', bg=self.bg, font=('Arial', 11))
         hint.pack(side='bottom', pady=4)
 
-        # 点击窗口任意处 / 任意键 关闭
-        self.bind('<Button-1>', lambda e: self.destroy())
-        self.bind('<Escape>', lambda e: self.destroy())
-        self.bind('<Return>', lambda e: self.destroy())
-        self.bind('<space>', lambda e: self.destroy())
-        self.bind('<Any-KeyPress>', lambda e: self.destroy())
+        # 点击窗口任意处 / 任意键 关闭; 统一走 _close, 确保 grab 释放, 不然后续 F8 会被 _busy 卡住
+        def _close(_e=None):
+            try: self.grab_release()
+            except Exception: pass
+            self.destroy()
+        self.bind('<Button-1>', _close)
+        self.bind('<Escape>', _close)
+        self.bind('<Return>', _close)
+        self.bind('<space>', _close)
+        self.bind('<Any-KeyPress>', _close)
+        self.bind('<FocusOut>', _close)   # 失焦也关, 避免窗口残留卡住 _busy
         # 子控件也转发点击
-        bar.bind('<Button-1>', lambda e: self.destroy())
-        self.img_label.bind('<Button-1>', lambda e: self.destroy())
-        hint.bind('<Button-1>', lambda e: self.destroy())
+        bar.bind('<Button-1>', _close)
+        self.img_label.bind('<Button-1>', _close)
+        hint.bind('<Button-1>', _close)
         self.focus_force()
         self.grab_set()  # 模态, 保证拿到键盘焦点
         self._render()
@@ -297,11 +302,13 @@ def detect_region(region):
         arr = np.array(shot)[:, :, :3]
     r = model.predict(source=arr, conf=0.25, iou=0.45,
                                   agnostic_nms=False, max_det=30,
-                                  device=0, verbose=False)[0]
+                                  device=DEVICE, verbose=False)[0]
     n = len(r.boxes)
     confs = [round(float(c), 3) for c in r.boxes.conf] if n else []
     annotated = r.plot()
-    out_path = 'screenshot_result.jpg'
+    # 存到系统临时目录, 不污染当前目录/exe 同级目录
+    import tempfile
+    out_path = os.path.join(tempfile.gettempdir(), 'nailong_screenshot_result.jpg')
     Image.fromarray(annotated[:, :, ::-1]).save(out_path)
     return n, confs, out_path
 
@@ -317,7 +324,12 @@ def start_detect(root):
         region = sel.region
         if not region or (region[2]-region[0] < 5 or region[3]-region[1] < 5):
             return
-        n, confs, path = detect_region(region)
+        try:
+            n, confs, path = detect_region(region)
+        except Exception as e:
+            # 识别失败不能静默, 否则用户只看到"没反应"; 弹窗说明原因
+            ctypes.windll.user32.MessageBoxW(0, f'识别失败:\n{e}', '奶龙识别', 0x10)
+            return
         print(f"识别到 {n} 个, 置信度 {confs}")
         rw = ResultWindow(root, path, n, confs)
         root.wait_window(rw)   # 占住 _busy 直到结果窗口关闭, 期间忽略新的 F8
