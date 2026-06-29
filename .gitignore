@@ -12,18 +12,34 @@ venv/
 # Jupyter
 .ipynb_checkpoints/
 
-# 训练日志
+# 日志
 *.log
 
-# 数据集（1.6G + 363M，太大不进 git）
+# 数据集（太大不进 git）
 nailong/
 nailong-extra/
 
-# 训练产物和权重（runs 49M + 权重 22M）
+# 训练产物
 runs/
+
+# PyInstaller 打包产物
+build/
+dist/
+*.manifest
+
+# 权重: 默认忽略所有 .pt, 但放行发布用的 models/best.pt
 *.pt
 *.pth
 *.onnx
+!models/best.pt
+
+# 运行时产物
+screenshot_result.jpg
+live_last.jpg
 
 # ultralytics 缓存
 *.cache
+
+# 工具
+.codegraph/
+.claude/

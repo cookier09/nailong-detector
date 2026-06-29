@@ -1,7 +1,0 @@
-path: E:/github_projects/mmdetection/nailong
-train: train/images
-val: valid/images
-test: test/images
-
-nc: 1
-names: ['nailong']
