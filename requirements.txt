@@ -1,0 +1,11 @@
+# 奶龙识别 - 依赖
+# GPU 版(本机训练/推理, 需 CUDA): 安装时把 torch 换成对应 CUDA 版本
+# CPU 版(打包发布 / 无显卡): pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+ultralytics>=8.4.0
+torch>=2.1.0
+torchvision>=0.16.0
+numpy<2.0
+pillow>=10.0.0
+mss>=9.0.0
+keyboard>=0.13.5
